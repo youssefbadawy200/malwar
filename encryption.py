@@ -1,5 +1,6 @@
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
+from Crypto.Util.Padding import pad
 import os
 
 def encrypt_files(file_paths):
@@ -8,11 +9,19 @@ def encrypt_files(file_paths):
         with open(file_path, 'rb') as f:
             data = f.read()
 
-        cipher = AES.new(key, AES.MODE_EAX)
-        ciphertext, tag = cipher.encrypt_and_digest(data)
+        # Generate a random IV for CBC mode
+        iv = get_random_bytes(16)
 
+        # Pad the data to ensure it aligns with the block size
+        padded_data = pad(data, AES.block_size)
+
+        # Encrypt the data
+        cipher = AES.new(key, AES.MODE_CBC, iv)
+        ciphertext = cipher.encrypt(padded_data)
+
+        # Write the IV + ciphertext to the file
         with open(file_path, 'wb') as f:
-            f.write(cipher.nonce + tag + ciphertext)
+            f.write(iv + ciphertext)
 
     return key
 

